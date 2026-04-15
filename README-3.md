@@ -6,7 +6,7 @@
 ![Arduino](https://img.shields.io/badge/Arduino-UNO-00979D?logo=arduino)
 ![Accuracy](https://img.shields.io/badge/Test%20Accuracy-~90%25-brightgreen)
 
-An end-to-end autonomous robotic system that classifies and sorts laundry items into labeled baskets — completely hands-free.
+An end-to-end autonomous robotic system that classifies and sorts laundry items into labeled baskets - completely hands-free.
 
 Built from scratch: 3D-printed robotic arm, custom-wired electronics, self-collected image dataset, and a fine-tuned deep learning model deployed on edge hardware.
 
