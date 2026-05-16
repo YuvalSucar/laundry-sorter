@@ -132,9 +132,8 @@ laundry-sorter/
 │   └── resnet18_best_ft.pt   # Best fine-tuned model weights
 ├── train/              # Training images (by class folder)
 ├── val/                # Validation images
-├── test/               # Test images
-└── assets/
-    └── system_photo.jpg
+└── test/               # Test images
+
 ```
 
 ---
