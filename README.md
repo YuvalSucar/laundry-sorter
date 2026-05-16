@@ -173,7 +173,7 @@ Open `arduino/arduino.ino` in the Arduino IDE and upload to Arduino UNO.
 | **Custom CNN limitations** | Training from scratch required significantly more data and compute to reach acceptable accuracy — transfer learning proved far more effective for this dataset size |
 | **Raspberry Pi thermal throttling** | Active cooling and optimized inference loop |
 | **Motor power spikes** | Dedicated 5V/8A power supply for driver and servos |
-| **Gripper angle precision** | Calibrated PWM values per basket position |
+
 
 ---
 
