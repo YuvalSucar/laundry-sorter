@@ -34,7 +34,7 @@ def preprocess():
    # Image preprocessing:
     #- Resize to 224x224 (ResNet input size)
     #- Convert to tensor (numbers)
-    #- Normalize (same stats as ImageNet training)
+    #- Normalize (pixels to resnet range)
 
     return transforms.Compose([
         transforms.Resize((224, 224)),
@@ -52,30 +52,30 @@ def classify(model, device, tfm, rgb_array):
     img = Image.fromarray(rgb_array)
     x = tfm(img).unsqueeze(0).to(device)   
 
-    with torch.no_grad():      # no gradients needed for inference
-        logits = model(x)
-        probs = F.softmax(logits, dim=1).cpu().numpy()[0]
+    with torch.no_grad():      # no gradients needed for inference - not in train right now
+        logits = model(x)      # scores for each category
+        probs = F.softmax(logits, dim=1).cpu().numpy()[0]   # transfer into propabillity precents each category score
 
-    idx = int(np.argmax(probs))
-    return CLASSES[idx], float(probs[idx])
+    idx = int(np.argmax(probs)) # return the biggest prop
+    return CLASSES[idx], float(probs[idx]) #return the class index and the prop
 
 
 def wait_for_line(ser, want, timeout=10.0):
     #Wait until we receive an exact line from Arduino, like "HOLD" or "DONE".
     #NEW LINE AFTER RECEVING '\n'.
     
-    t0 = time.time()
+    t0 = time.time()  #start time
     buf = b""
 
-    while time.time() - t0 < timeout:
-        chunk = ser.read(128)
+    while time.time() - t0 < timeout: # if the max time from start still not end
+        chunk = ser.read(128) #read from serial
 
-        if chunk:
+        if chunk:              # if theres information from serial in chunk
             buf += chunk
             while b"\n" in buf:
-                line, buf = buf.split(b"\n", 1)
-                s = line.decode(errors="ignore").strip()
-                if s == want:
+                line, buf = buf.split(b"\n", 1)   #cut the info before the /n
+                s = line.decode(errors="ignore").strip()   #transfer info from bytes to text
+                if s == want:  #if the info match what we wanted to recieve
                     return True
         else:
             time.sleep(0.01)
@@ -85,7 +85,7 @@ def wait_for_line(ser, want, timeout=10.0):
 
 def wait_for_prefix(ser, prefix, timeout=10.0):
     #Wait until Arduino sends a line that starts with a prefix -"ACK ".
-    #Returns the full line or None.
+    #Returns the full line or None.  #like the func wait_for_line but return the line
 
     t0 = time.time()
     buf = b""
@@ -120,11 +120,11 @@ def main():
         main={"size": (640, 480), "format": "RGB888"}
     )
     picam2.configure(config)
-    picam2.start()
+    picam2.start()   # statring the cam
     time.sleep(1)  # let camera stabilize
 
     # Serial init 
-    ser = serial.Serial(SERIAL_PORT, BAUD, timeout=0.5)
+    ser = serial.Serial(SERIAL_PORT, BAUD, timeout=0.5) 
 
     # Small wait to let everything fully boot
     time.sleep(STARTUP_DELAY)
@@ -139,7 +139,7 @@ def main():
 
         # Arduino sends FULL when sensor sees clothes and it is not busy
         if line == "FULL" and not busy:
-            now = time.time()
+            now = time.time()  #keeping the time (now)
 
             # ignore repeated "FULL" too quickly
             if now - last_full < 0.5:
@@ -154,15 +154,15 @@ def main():
             ok = wait_for_line(ser, "HOLD", timeout=25.0)
             if not ok:
                 busy = False
-                continue
+                continue  #going back to start and waiting
 
             # Wait a bit more, then capture ONE frame
             time.sleep(AFTER_HOLD_DELAY)
-            frame = picam2.capture_array()
+            frame = picam2.capture_array()   #taking photo
 
             # Run classification and choose the top class
             label, conf = classify(model, device, tfm, frame)
-            print(f"Pred: {label} ({conf*100:.1f}%)")
+            print(f"Pred: {label} ({conf*100:.1f}%)") #accuracy of one num after the dot-prop
 
             # Send label to Arduino so it drops in the right basket
             ser.write(f"DROP {label}\n".encode())
