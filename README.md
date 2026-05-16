@@ -68,7 +68,7 @@ Rather than training from scratch, I fine-tuned a pretrained ResNet18 (ImageNet 
 
 **Training pipeline:**
 - **Stage 1** — Freeze all layers, train only the classification head (FC layer) for 15 epochs
-- **Stage 2** — Unfreeze `layer4` + FC, fine-tune with a lower learning rate (1e-4) for 8 additional epochs
+- **Stage 2** — Unfreeze `layer4` + FC, fine-tune for 8 additional epochs
 - **Best model** saved based on validation accuracy
 
 **Data augmentation:** random horizontal flip, rotation (±10°), color jitter
