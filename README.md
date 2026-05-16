@@ -79,7 +79,7 @@ Rather than training from scratch, I fine-tuned a pretrained ResNet18 (ImageNet 
 | `color_pants` | Colored trousers |
 | `color_shirts` | Colored shirts |
 | `dresses` | Dresses |
-| `jeans` | Denim jeans |
+| `jeans` | jeans |
 | `towel` | Towels |
 | `white` | White laundry |
 
